@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} Tag
  * @property {string} tag The tag to recognise.
- * @property {Number|String|string} value The value type the tag should have. e.g "Number"
+ * @property {Number|String|Boolean|string} value The value type the tag should have. Accepts String, Number and Boolean
  */
 
 /**
@@ -57,7 +57,8 @@ module.exports = function Tagify(options = {}, ...tags) {
     if (typeof t === "string") return t
     if (typeof t === "object" && t) {
       if (t.tag && t.value) {
-        if (t.value === Number || typeof t.value === "number" || !isNaN(t.value)) t.value = "\\d+"
+        if (t.value === Boolean || typeof t.value === "boolean" || ["true", "false"].includes(t.value)) t.value = "(true|false)"
+        else if (t.value === Number || typeof t.value === "number" || !isNaN(t.value)) t.value = "\\d+"
         else if (t.value === String || typeof t.value === "string" && !t.value.includes("\\")) t.value = "\\w+"
         
         return t.tag + " " + t.value
@@ -72,6 +73,11 @@ module.exports = function Tagify(options = {}, ...tags) {
     
     if (t.includes(" ")) {
       t = t.split(/ +/)
+      
+      if (!isNaN(t[1])) t[1] = Number(t[1])
+      else if (t[1] === "true") t[1] = true
+      else if (t[1] === "false") t[1] = false
+      
       data[t[0]] = t[1]
       matches.push(t[0])
     } else matches.push(t)
