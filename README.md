@@ -55,7 +55,7 @@ Tagify("Does fhing work lol --invalidtag wait its --tag1 isnt it!", "tag1")
 Tagify({
   string: "Hello --tag1 --tag2",
   prefix: "--"
-}, "\w+")
+}, "\\w+")
 
 /*
 Returns:
