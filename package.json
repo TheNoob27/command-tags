@@ -1,0 +1,27 @@
+{
+  "name": "command-tags",
+  "version": "1.0.0",
+  "description": "A way to parse custom tags/input from a string.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": "^11.14.0"
+  },
+  "repository": {
+    "url": "https://github.com/TheNoob27/command-tags"
+  },
+  "license": "MIT",
+  "keywords": [
+    "parse",
+    "discord-command-tags",
+    "discord.js",
+    "command",
+    "tags",
+    "parse-tags",
+    "tag-parser",
+    "command-tags"
+  ]
+}
