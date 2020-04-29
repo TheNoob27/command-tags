@@ -70,8 +70,9 @@ module.exports = function Tagify(options = {}, ...tags) {
     
     return t
   }).join("|" + prefix) + ") ?", "g", "i"), t => {
-    if (t.startsWith(" ") && t.endsWith(" ")) string = string.slice(0, string.indexOf(t)) + " " string.slice(string.indexOf(t), string.length)
-    else t = t.trim()
+    let spc = false
+    if (t.startsWith(" ") && t.endsWith(" ") && !string.startsWith(t) && !string.endsWith(t)) spc = true
+    t = t.trim()
     
     if (prefix.includes("|")) t = t.replace(new RegExp(prefix, "i"), "")
     else t = t.slice(prefix.length)
@@ -87,7 +88,7 @@ module.exports = function Tagify(options = {}, ...tags) {
       matches.push(t[0])
     } else matches.push(t)
     
-    return ""
+    return spc ? " " : ""
   }).trim() : string
 
   return {
