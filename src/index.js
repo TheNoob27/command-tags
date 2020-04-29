@@ -47,7 +47,7 @@ module.exports = function Tagify(options = {}, ...tags) {
     string = options
     prefix = "(-|--)"
   } else if (options && typeof options === "object") {
-    { string, prefix } = options
+    ({ string, prefix } = options)
   }
   
   if (!string || !prefix) [string, prefix] = [string || "", prefix || "--"]
