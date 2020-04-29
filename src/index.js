@@ -63,7 +63,7 @@ module.exports = function Tagify(options = {}, ...tags) {
           if (t.value === Boolean || typeof t.value === "boolean" || ["true", "false"].includes(t.value)) t.value = "(true|false)"
           else if (t.value === Number || typeof t.value === "number" || !isNaN(t.value)) t.value = "\\d+"
           else if (t.value instanceof Regexp) t.value = t.value.toString().split("/")[1]
-          else if (t.value === String || typeof t.value === "string" && !t.value.includes("\\")) t.value = "\\w+"
+          else if (t.value === String || typeof t.value === "string" && !t.value.includes("\\")) t.value = "[A-Za-z]"
         }
         
         return t.tag + " " + t.value
