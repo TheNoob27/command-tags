@@ -5,6 +5,7 @@ Parse tags from a discord message and use them for commands, or personal use.
 ```js
 const Tagify = require("command-tags")
 
+// Check for tags
 Tagify({
   string: "Hello world! --bold --underline",
   prefix: "--"
@@ -21,7 +22,7 @@ Returns:
 */
 
 
-
+// Check for tags and values
 Tagify({
   string: "Draw -name Painting -price 20 -width 1080 -height 1440 -paintbrush",
   prefix: "-"
@@ -39,6 +40,7 @@ Returns:
 
 
 
+// Invalid tag use example
 Tagify("Does fhing work lol --invalidtag wait its --tag1 isnt it!", "tag1")
 
 /*
@@ -51,7 +53,7 @@ Tagify("Does fhing work lol --invalidtag wait its --tag1 isnt it!", "tag1")
 */
 
 
-
+// Match any tag
 Tagify({
   string: "Hello --tag1 --tag2",
   prefix: "--"
@@ -64,6 +66,23 @@ Returns:
   newString: "Hello",
   matches: ["tag1", "tag2"],
   data: {}
+}
+*/
+
+
+// Match any tag with values. Set resolve to false in the tag object to avoid resolving the value to match a string.
+Tagify({
+  string: "Hello --tag1 1 --tag2 1",
+  prefix: "--"
+}, {tag: "\\w+", value: "\\d+", resolve: false})
+
+/*
+Returns:
+{
+  string: "Hello --tag1 1 --tag2 1",
+  newString: "Hello",
+  matches: ["tag1", "tag2"],
+  data: {tag1: 1, tag2: 1}
 }
 */
 ``` 
