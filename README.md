@@ -1,6 +1,6 @@
 # command-tags
 Parse tags from a discord message and use them for commands, or personal use.
--
+
 # Examples
 ```js
 const Tagify = require("command-tags")
@@ -20,6 +20,8 @@ Returns:
 }
 */
 
+
+
 Tagify({
   string: "Draw -name Painting -price 20 -width 1080 -heigth 1440 -paintbrush",
   prefix: "-"
@@ -35,7 +37,10 @@ Returns:
 }
 */
 
+
+
 Tagify("Does fhing work lol --invalidtag wait its --tag1 isnt it!", "tag1")
+
 /*
 {
   string: "Does fhing work lol --invalidtag wait its --tag1 isnt it!"
@@ -45,10 +50,13 @@ Tagify("Does fhing work lol --invalidtag wait its --tag1 isnt it!", "tag1")
 }
 */
 
+
+
 Tagify({
   string: "Hello --tag1 --tag2",
   prefix: "--"
 }, "\w+")
+
 /*
 Returns:
 {
