@@ -23,7 +23,7 @@ Returns:
 
 
 Tagify({
-  string: "Draw -name Painting -price 20 -width 1080 -heigth 1440 -paintbrush",
+  string: "Draw -name Painting -price 20 -width 1080 -height 1440 -paintbrush",
   prefix: "-"
 }, "paintbrush", {tag: "price", value: Number}, {tag: "width", value: Number}, {tag: "name", value: String}, {tag: "height", value: Number})
 
