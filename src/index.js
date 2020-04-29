@@ -45,7 +45,7 @@ module.exports = function Tagify(options = {}, ...tags) {
   let string, prefix;
   if (typeof options === "string") {
     string = options
-    prefix = "(-|--)"
+    prefix = "-+"
   } else if (options && typeof options === "object") {
     ({ string, prefix } = options)
   }
@@ -67,7 +67,7 @@ module.exports = function Tagify(options = {}, ...tags) {
     return t
   }).join("|" + prefix) + ") ?", "g", "i"), t => {
     t = t.trim()
-    if (t.includes("|")) t = t.replace(new RegExp(prefix, "i"), "")
+    if (prefix.includes("|")) t = t.replace(new RegExp(prefix, "i"), "")
     else t = t.slice(prefix.length)
     
     if (t.includes(" ")) {
