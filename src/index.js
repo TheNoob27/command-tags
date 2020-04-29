@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} Tag
  * @property {string} tag The tag to recognise.
- * @property {Number|String|Boolean|string} value The value type the tag should have. Accepts String, Number and Boolean
+ * @property {Number|String|Boolean|RegExp|string} value The value type the tag should have. Accepts String, Number, Boolean or a RegExp
  * @property {boolean} [resolve=true] Whether or not to resolve the value property into a proper type before replacing the text. Set to false if you want to use custom regex as your value.
  */
 
@@ -57,10 +57,12 @@ module.exports = function Tagify(options = {}, ...tags) {
     if (typeof t === "string" && t.includes(" ")) t = {tag: t.split(/ +/)[0], value: t.split(/ +/)[1]}
     if (typeof t === "string") return t
     if (typeof t === "object" && t) {
+      if (!t.value && t.tag) return t.tag
       if (t.tag && t.value) {
         if (t.resolve !== false) {
           if (t.value === Boolean || typeof t.value === "boolean" || ["true", "false"].includes(t.value)) t.value = "(true|false)"
           else if (t.value === Number || typeof t.value === "number" || !isNaN(t.value)) t.value = "\\d+"
+          else if (t.value instanceof Regexp) t.value = t.value.toString().split("/")[1]
           else if (t.value === String || typeof t.value === "string" && !t.value.includes("\\")) t.value = "\\w+"
         }
         
