@@ -67,7 +67,7 @@ module.exports = function Tagify(options = {}, ...tags) {
     return t
   }).join("|" + prefix) + ") ?", "g", "i"), t => {
     t = t.trim().slice(prefix.length)
-    if (t.split(/ +/)[1]) {
+    if (t.includes(" ")) {
       t = t.split(/ +/)
       data[t[0]] = t[1]
       matches.push(t[0])
