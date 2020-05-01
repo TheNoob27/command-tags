@@ -28,6 +28,12 @@ Tagify({
   prefix: "-"
 }, "paintbrush", {tag: "price", value: Number}, {tag: "width", value: Number}, {tag: "name", value: String}, {tag: "height", value: Number})
 
+// or..
+Tagify({
+  string: "Draw -name Painting -price 20 -width 1080 -height 1440 -paintbrush",
+  prefix: "-"
+}, "paintbrush", {price: Number}, {width: Number}, {name: String}, {height: Number})
+
 /* 
 Returns: 
 {
