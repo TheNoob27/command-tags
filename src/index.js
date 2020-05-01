@@ -57,6 +57,11 @@ module.exports = function Tagify(options = {}, ...tags) {
     if (typeof t === "string" && t.includes(" ")) t = {tag: t.split(/ +/)[0], value: t.split(/ +/)[1]}
     if (typeof t === "string") return t
     if (typeof t === "object" && t) {
+      let other = Object.keys(t).filter(k => !["tag", "value", "resolve"].includes(k))
+      if (other) {
+        if (!t.tag) (t.tag = other[0]) && (t.value = t[other[0]])
+      }
+      
       if (!t.value && t.tag) return t.tag
       if (t.tag && t.value) {
         if (t.resolve !== false) {
