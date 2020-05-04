@@ -42,7 +42,7 @@ module.exports = function Tagify(options = {}, ...tags) {
   let matches = []
   let data = {}
   tags = tags.flat()
-  
+
   let string, prefix;
   if (typeof options === "string") {
     string = options
@@ -50,9 +50,9 @@ module.exports = function Tagify(options = {}, ...tags) {
   } else if (options && typeof options === "object") {
     ({ string, prefix } = options)
   }
-  
+
   if (!string || !prefix) [string, prefix] = [string || "", prefix || "--"]
-  
+
   let newString = tags[0] ? string.replace(new RegExp(" ?(" + prefix + tags.map(t => {
     if (typeof t === "string" && t.includes(" ")) t = {tag: t.split(/ +/)[0], value: t.split(/ +/)[1]}
     if (typeof t === "string") return t
@@ -61,40 +61,40 @@ module.exports = function Tagify(options = {}, ...tags) {
       if (other) {
         if (!t.tag) (t.tag = other[0]) && (t.value = t[other[0]])
       }
-      
+
       if (!t.value && t.tag) return t.tag
       if (t.tag && t.value) {
         if (t.resolve !== false) {
           if (t.value === Boolean || typeof t.value === "boolean" || ["true", "false"].includes(t.value)) t.value = "(true|false)"
           else if (t.value === Number || typeof t.value === "number" || !isNaN(t.value)) t.value = "\\d+"
-          else if (t.value instanceof Regexp) t.value = t.value.toString().split("/")[1]
+          else if (t.value instanceof RegExp) t.value = t.value.toString().split("/")[1]
           else if (t.value === String || typeof t.value === "string" && !t.value.includes("\\")) t.value = "[A-Za-z]+"
         }
-        
+
         return t.tag + " " + t.value
       }
     }
-    
+
     return t
   }).join("|" + prefix) + ") ?", "g", "i"), t => {
     let spc = false
     if (t.startsWith(" ") && t.endsWith(" ") && !string.startsWith(t) && !string.endsWith(t)) spc = true
     t = t.trim()
-    
+
     if (prefix.includes("|")) t = t.replace(new RegExp(prefix, "i"), "")
     else t = t.slice(prefix.length)
-    
+
     if (t.includes(" ")) {
       t = t.split(/ +/)
-      
+
       if (!isNaN(t[1])) t[1] = Number(t[1])
       else if (t[1] === "true") t[1] = true
       else if (t[1] === "false") t[1] = false
-      
+
       data[t[0]] = t[1]
       matches.push(t[0])
     } else matches.push(t)
-    
+
     return spc ? " " : ""
   }).trim() : string
 

@@ -1,5 +1,5 @@
 # command-tags
-Parse tags from a discord message and use them for commands, or personal use.
+Parse custom tags/input that appear anywhere in a string.
 
 # Examples
 ```js
@@ -11,8 +11,8 @@ Tagify({
   prefix: "--"
 }, "bold", "italic", "strikethrough", "underline")
 
-/* 
-Returns: 
+/*
+Returns:
 {
   string: "Hello world! --bold --underline",
   newString: "Hello world!",
@@ -34,8 +34,8 @@ Tagify({
   prefix: "-"
 }, "paintbrush", {price: Number}, {width: Number}, {name: String}, {height: Number})
 
-/* 
-Returns: 
+/*
+Returns:
 {
   string: "Draw -name Painting -price 20 -width 1080 -height 1440",
   newString: "Draw",
@@ -91,4 +91,4 @@ Returns:
   data: {tag1: 1, tag2: 1}
 }
 */
-``` 
+```
