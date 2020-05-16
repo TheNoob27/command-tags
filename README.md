@@ -3,9 +3,13 @@ Parse custom tags/input that appear anywhere in a string.
 
 # Options
 **string**: The string to parse command tags from.
+
 **prefix**: The prefix that would recognise a word as a tag. This can be a String or Regular Expression. e.g "--big", "--" being the prefix. Set to match any amount of `-`s by default.
+
 **silenceJSONErrors**: Whether or not to silence errors when converting a string to a JSON object. Set to false by default.
+
 **numbersInStrings**: Whether or not to match numbers too when you pass String into the Tag object. e.g "hello2" will match the whole word with this enabled, and will just match "hello" with this disabled. Set to true by default.
+
 **removeAllTags**: Whether or not to should remove every word that starts with the prefix, but only match valid tags. Invalid tags will be removed but not added to the matches array. Set to false by default.
 
 # Examples
