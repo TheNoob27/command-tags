@@ -1,6 +1,13 @@
 # command-tags
 Parse custom tags/input that appear anywhere in a string.
 
+# Options
+**string**: The string to parse command tags from.
+**prefix**: The prefix that would recognise a word as a tag. This can be a String or Regular Expression. e.g "--big", "--" being the prefix. Set to match any amount of `-`s by default.
+**silenceJSONErrors**: Whether or not to silence errors when converting a string to a JSON object. Set to false by default.
+**numbersInStrings**: Whether or not to match numbers too when you pass String into the Tag object. e.g "hello2" will match the whole word with this enabled, and will just match "hello" with this disabled. Set to true by default.
+**removeAllTags**: Whether or not to should remove every word that starts with the prefix, but only match valid tags. Invalid tags will be removed but not added to the matches array. Set to false by default.
+
 # Examples
 ```js
 const Tagify = require("command-tags")
@@ -57,6 +64,20 @@ Tagify("Does fhing work lol --invalidtag wait its --tag1 isnt it!", "tag1")
   data: {}
 }
 */
+// Invalid tag use example, but with removeAllTags option enabled.
+Tagify({
+  string: "Does fhing work lol --invalidtag wait its --tag1 isnt it!",
+  removeAllTags: true
+}, "tag1")
+
+/*
+{
+  string: "Does fhing work lol --invalidtag wait its --tag1 isnt it!"
+  newString: "Does fhing work lol wait its isnt it!"
+  matches: ["tag1"]
+  data: {}
+}
+*/
 
 
 // Match any tag
@@ -89,6 +110,28 @@ Returns:
   newString: "Hello",
   matches: ["tag1", "tag2"],
   data: {tag1: 1, tag2: 1}
+}
+*/
+
+// Match values of different types
+Tagify({
+  string: "Convert colours --rgb [255, 53, 179] --num 519340 --hexes {\"hexadecimal\": \"0xFFFFFE\", \"hex\": \"#ec0d23\"}",
+  prefix: "--",
+  numbersInStrings: true
+}, {rgb: Array}, {num: Number}, {hexes: Object})
+
+/*
+{
+  string: "Convert colours --rgb [255, 53, 179] --num 519340 --hexes {\"hexadecimal\": \"0xFFFFFE\", \"hex\": \"#ec0d23\"}",
+  newString: "Convert colours",
+  matches: ["rgb", "num", "hexes"],
+  data: {
+    rgb: [255, 53, 179], 
+    num: 519340, 
+    hexes: {
+      hexadecimal: "0xFFFFFE", hex: "#ec0d23"
+    }
+  }
 }
 */
 ```
