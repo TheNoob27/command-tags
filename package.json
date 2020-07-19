@@ -1,14 +1,10 @@
 {
   "name": "command-tags",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "A way to parse custom tags/input from a string.",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js"
-  },
-  "dependencies": {},
-  "engines": {
-    "node": "^11.14.0"
   },
   "repository": {
     "url": "https://github.com/TheNoob27/command-tags"
@@ -22,6 +18,9 @@
     "tags",
     "parse-tags",
     "tag-parser",
-    "command-tags"
+    "parser",
+    "command-tags",
+    "options",
+    "option-parser"
   ]
 }

@@ -9,9 +9,10 @@
  * @typedef {Object} Options
  * @property {string} string The string to parse command tags from.
  * @property {string|RegExp} [prefix="--"] The prefix that would recognise a word as a tag. This can be a String or Regular Expression. e.g "--big", "--" being the prefix.
- * @property {boolean} [silenceJSONErrors=false] Whether or not to silence errors when converting a string to a JSON object.
  * @property {boolean} [numbersInStrings=true] Whether or not to match numbers too when you pass String into the Tag object. e.g "hello2" will match with this enabled, and won't with this disabled.
  * @property {boolean} [removeAllTags=false] Whether or not it should remove every word that starts with the prefix, but only match valid tags.
+ * @property {boolean} [negativeNumbers=true] Whether or not negative numbers can be matched if only looking for a number.
+ * @property {boolean} [numberDoubles=false] Whether or not doubles can be matched, such as 23.90 
  */
 
 /**
@@ -75,7 +76,8 @@ module.exports = function Tagify(options = {}, ...tags) {
           }
           else if (t.value === Number || typeof t.value === "number" || !isNaN(t.value)) {
             tagData[t.tag] = Number
-            t.value = "\\d+"
+            t.value = options.negativeNumbers ? "-?\\d+" : "\\d+"
+            if (options.numberDoubles) t.value += "(\.\\d+)?"
           }
           else if (t.value instanceof RegExp) {
             tagData[t.tag] = RegExp
@@ -87,7 +89,7 @@ module.exports = function Tagify(options = {}, ...tags) {
           }
           else if (t.value === String || typeof t.value === "string" && !t.value.includes("\\")) {
             tagData[t.tag] = String
-            t.value = options.numbersInStrings ? "\\w+" : "[A-Za-z]+"
+            t.value = options.numbersInStrings !== false ? "\\w+" : "[A-Za-z]+"
           }
         }
 
@@ -119,7 +121,6 @@ module.exports = function Tagify(options = {}, ...tags) {
         try {
           t[1] = t[1].startsWith("{") ? JSON.parse(t[1].replace(/({|\s|,)\w+:/g, w => w[0] + '"' + w.slice(1, w.length - 1) + '":')) : JSON.parse(t[1])
         } catch(err) {
-          if (!options.silenceJSONErrors) throw err;
           return old
         }
       }
@@ -144,3 +145,9 @@ module.exports = function Tagify(options = {}, ...tags) {
     data
   }
 }
+
+/**
+ * The package's version.
+ */
+
+module.exports.version = require("../package.json").version
