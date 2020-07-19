@@ -1,5 +1,5 @@
 # command-tags
-Parse custom tags/input that appear anywhere in a string.
+Parse custom tags/input/options that appear anywhere in a string.
 
 # Options
 **string**: The string to parse command tags from.
@@ -46,6 +46,12 @@ Tagify({
   string: "Draw -name Painting -price 20 -width 1080 -height 1440 -paintbrush",
   prefix: "-"
 }, "paintbrush", {price: Number}, {width: Number}, {name: String}, {height: Number})
+
+// OR..
+Tagify({
+  string: "Draw -name Painting -price 20 -width 1080 -height 1440 -paintbrush",
+  prefix: "-"
+}, "paintbrush", {price: Number, width: Number, name: String, height: Number})
 
 /*
 Returns:

@@ -58,17 +58,23 @@ module.exports = function Tagify(options = {}, ...tags) {
   if (!string || !prefix) [string, prefix] = [string || "", prefix || "-+"]
 
   let tagData = {}
+  for (const t of tags) {
+    if (t && typeof t === "object") {
+      if (t.tag) continue;
+      let other = Object.keys(t).filter(k => !["tag", "value", "resolve"].includes(k))
+      if (other.length) {
+        if (tags.indexOf(t) !== -1) tags.splice(tags.indexOf(t), 1)
+        for (const i of other) tags.push({ tag: i, value: t[i], resolve: t.resolve })
+      }
+    }
+  }
+
   tags = tags.map(t => {
     if (typeof t === "string" && t.includes(" ")) t = {tag: t.split(/ +/)[0], value: t.split(/ +/)[1]}
     if (typeof t === "string") return t
     if (typeof t === "object" && t) {
-      let other = Object.keys(t).filter(k => !["tag", "value", "resolve"].includes(k))
-      if (other[0]) {
-        if (!t.tag) (t.tag = other[0]) && (t.value = t[other[0]])
-      }
-
-      if (!t.value && t.tag) return t.tag
-      if (t.tag && t.value) {
+      if (t.value == null && t.tag) return t.tag
+      if (t.tag && t.value !== null) {
         if (t.resolve !== false) {
           if (t.value === Boolean || typeof t.value === "boolean" || ["true", "false"].includes(t.value)) {
             tagData[t.tag] = Boolean
@@ -109,7 +115,7 @@ module.exports = function Tagify(options = {}, ...tags) {
     if (prefix.includes("|")) t = t.replace(new RegExp(prefix, "i"), "")
     else t = t.slice(prefix.length)
 
-    if (tagData[t.split(" ")[0]]) {
+    if (tagData[t.split(" ")[0]] || (t.includes(" ") && !tags.includes(old))) {
       t = t.split(/ +/)
       t = [t[0], t.slice(1).join(" ")]
 
@@ -117,17 +123,17 @@ module.exports = function Tagify(options = {}, ...tags) {
       else if (tagData[t[0]] === Boolean) {
         if (t[1] === "true") t[1] = true
         else if (t[1] === "false") t[1] = false
-      } else if (tagData[t[0]] === Object) {
+      } else { //if (tagData[t[0]] === Object) {
         try {
           t[1] = t[1].startsWith("{") ? JSON.parse(t[1].replace(/({|\s|,)\w+:/g, w => w[0] + '"' + w.slice(1, w.length - 1) + '":')) : JSON.parse(t[1])
         } catch(err) {
-          return old
+          if (tagData[t[0]] === Object) return options.removeAllTags ? spc ? " " : "" : old
         }
       }
 
       data[t[0]] = t[1]
-      matches.push(t[0])
-    } else matches.push(t)
+      if (!matches.includes(t[0])) matches.push(t[0])
+    } else if (!matches.includes(t)) matches.push(t)
 
     return spc ? " " : ""
   }).trim() : string
