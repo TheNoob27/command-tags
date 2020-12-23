@@ -10,9 +10,11 @@ Parse custom tags/input/options that appear anywhere in a string.
 
 **removeAllTags**: Whether or not to should remove every word that starts with the prefix, but only match valid tags. Invalid tags will be removed but not added to the matches array. Set to false by default.
 
-**negativeNumbers** Whether or not negative numbers can be matched if only looking for a number. Set to true by default.
+**negativeNumbers**: Whether or not negative numbers can be matched if only looking for a number. Set to true by default.
 
-**numberDoubles** Whether or not doubles can be matched, such as 23.90. Set to false by default.
+**numberDoubles**: Whether or not doubles can be matched, such as 23.90. Set to false by default.
+
+**tagData**: Default types that matches tags should be parsed into.
 
 # Examples
 ```js
@@ -39,19 +41,19 @@ Returns:
 Tagify({
   string: "Draw -name Painting -price 20 -width 1080 -height 1440 -paintbrush",
   prefix: "-"
-}, "paintbrush", {tag: "price", value: Number}, {tag: "width", value: Number}, {tag: "name", value: String}, {tag: "height", value: Number})
+}, "paintbrush", { tag: "price", value: Number }, { tag: "width", value: Number }, { tag: "name", value: String }, { tag: "height", value: Number })
 
 // or..
 Tagify({
   string: "Draw -name Painting -price 20 -width 1080 -height 1440 -paintbrush",
   prefix: "-"
-}, "paintbrush", {price: Number}, {width: Number}, {name: String}, {height: Number})
+}, "paintbrush", { price: Number }, { width: Number }, { name: String }, { height: Number })
 
 // OR..
 Tagify({
   string: "Draw -name Painting -price 20 -width 1080 -height 1440 -paintbrush",
   prefix: "-"
-}, "paintbrush", {price: Number, width: Number, name: String, height: Number})
+}, "paintbrush", { price: Number, width: Number, name: String, height: Number })
 
 /*
 Returns:
@@ -59,7 +61,7 @@ Returns:
   string: "Draw -name Painting -price 20 -width 1080 -height 1440",
   newString: "Draw",
   matches: ["name", "price", "width", "height", "paintbrush"]
-  data: {name: "Painting", price: 20, width: 1080, height: 1440}
+  data: { name: "Painting", price: 20, width: 1080, height: 1440 }
 }
 */
 
@@ -113,7 +115,7 @@ Returns:
 Tagify({
   string: "Hello --tag1 1 --tag2 1",
   prefix: "--"
-}, {tag: "\\w+", value: "\\d+", resolve: false})
+}, { tag: "\\w+", value: "\\d+", resolve: false })
 
 /*
 Returns:
@@ -121,7 +123,7 @@ Returns:
   string: "Hello --tag1 1 --tag2 1",
   newString: "Hello",
   matches: ["tag1", "tag2"],
-  data: {tag1: 1, tag2: 1}
+  data: { tag1: 1, tag2: 1 }
 }
 */
 
@@ -130,7 +132,7 @@ Tagify({
   string: "Convert colours --rgb [255, 53, 179] --num 519340 --hexes {\"hexadecimal\": \"0xFFFFFE\", \"hex\": \"#ec0d23\"}",
   prefix: "--",
   numbersInStrings: true
-}, {rgb: Array}, {num: Number}, {hexes: Object})
+}, { rgb: Array }, { num: Number }, { hexes: Object })
 
 /*
 {
@@ -143,6 +145,27 @@ Tagify({
     hexes: {
       hexadecimal: "0xFFFFFE", hex: "#ec0d23"
     }
+  }
+}
+*/
+
+// Specify tag types
+Tagify({
+  string: "Colour --hex 0xECD558",
+  prefix: "--",
+  numbersInStrings: true,
+  tagData: {
+    hex: Number // without this, data.hex would be "0xecd558"
+    // if the value is truthy and not Number|String|Object|Boolean (e.g. RegExp) then an attempt to json parse the matched tag will be made
+  }
+}, { hex: String }) // parse X from the input like a string, parse it like a number
+/*
+{
+  string: "Colour --hex 0xECD558",
+  newString: "Colour",
+  matches: ["hex"],
+  data: {
+    hex: 15521112
   }
 }
 */

@@ -1,7 +1,7 @@
 {
   "name": "command-tags",
-  "version": "1.1.4",
-  "description": "A way to parse custom tags/input/options from a string.",
+  "version": "1.1.5",
+  "description": "A way to parse custom tags/flags/input/options from a string.",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js"
