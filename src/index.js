@@ -115,7 +115,7 @@ module.exports = function Tagify(options = {}, ...tags) {
     t = t.trim()
 
     if (prefix.includes("|")) t = t.replace(new RegExp(prefix, "i"), "")
-    else t = t.slice(prefix.trim().length)
+    else t = t.slice(prefix.trimStart().length)
 
     if (tagData[t.split(" ")[0]] || (t.includes(" ") && !tags.includes(old))) {
       t = t.split(/ +/)
