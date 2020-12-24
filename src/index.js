@@ -89,13 +89,13 @@ module.exports = function Tagify(options = {}, ...tags) {
           }
           else if (t.value instanceof RegExp) {
             if (!tagData[t.tag]) tagData[t.tag] = RegExp
-            t.value = t.value.toString().split("/")[1]
+            t.value = `(${t.value.toString().split("/")[1]})`
           }
           else if ([Object, Array, JSON].includes(t.value) || typeof t.value === "object") {
             if (!tagData[t.tag]) tagData[t.tag] = Object
             t.value = t.value === Array || t.value instanceof Array ? "\\[[^]+]" : "{[^]+}"
           }
-          else if (t.value === String || typeof t.value === "string" && !t.value.includes("\\")) {
+          else if (t.value === String || typeof t.value === "string") {
             if (!tagData[t.tag]) tagData[t.tag] = String
             t.value = options.numbersInStrings !== false ? "\\w+" : "[A-Za-z]+"
           }

@@ -158,7 +158,7 @@ Tagify({
     hex: Number // without this, data.hex would be "0xecd558"
     // if the value is truthy and not Number|String|Object|Boolean (e.g. RegExp) then an attempt to json parse the matched tag will be made
   }
-}, { hex: String }) // parse X from the input like a string, parse it like a number
+}, { hex: String }) // get X from the input like its a string, parse it like a number
 /*
 {
   string: "Colour --hex 0xECD558",
