@@ -108,16 +108,16 @@ module.exports = function Tagify(options = {}, ...tags) {
     return t
   })
 
-  let newString = tags[0] ? string.replace(new RegExp(` ?(${prefix}${tags.join("|" + prefix)}) ?`, "g", "i"), t => {
+  if (prefix instanceof RegExp) prefix = prefix.toString().split("/")[1]
+  const p = new RegExp(prefix)
+  let newString = tags[0] ? string.replace(new RegExp(` ?(?:(${prefix})${tags.join("|" + prefix)}) ?`, "g", "i"), t => {
+    const old = t
     let spc = false
+    
     if (t.startsWith(" ") && t.endsWith(" ") && !string.startsWith(t) && !string.endsWith(t)) spc = true
-    let old = t
-    t = t.trim()
+    t = t.replace(p, "").trim()
 
-    if (prefix.includes("|")) t = t.replace(new RegExp(prefix, "i"), "")
-    else t = t.slice(prefix.trimStart().length)
-
-    if (tagData[t.split(" ")[0]] || (t.includes(" ") && !tags.includes(old))) {
+    if (tagData[t.split(" ")[0]] || (t.includes(" ") && !tags.includes(t))) {
       t = t.split(/ +/)
       t = [t[0], t.slice(1).join(" ")]
 
