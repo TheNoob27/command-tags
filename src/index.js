@@ -60,12 +60,14 @@ module.exports = function Tagify(options = {}, ...tags) {
   if (!string || !prefix) [string, prefix] = [string || "", prefix || "-+"]
 
   let tagData = options && options.tagData || {}
-  for (const t of tags) {
+  let n = tags.length
+  while (n--) {
+    const t = tags[n]
     if (t && typeof t === "object") {
       if (t.tag) continue;
-      let other = Object.keys(t).filter(k => !["tag", "value", "resolve"].includes(k))
+      const other = Object.keys(t).filter(k => !["tag", "value", "resolve"].includes(k))
       if (other.length) {
-        if (tags.indexOf(t) !== -1) tags.splice(tags.indexOf(t), 1)
+        tags.splice(n, 1)
         for (const i of other) tags.push({ tag: i, value: t[i], resolve: t.resolve })
       }
     }
@@ -110,7 +112,7 @@ module.exports = function Tagify(options = {}, ...tags) {
 
   if (prefix instanceof RegExp) prefix = prefix.toString().split("/")[1]
   const p = new RegExp(prefix)
-  let newString = tags[0] ? string.replace(new RegExp(` ?(?:(${prefix})${tags.join("|" + prefix)}) ?`, "g", "i"), t => {
+  let newString = tags[0] ? string.replace(new RegExp(` ?(?:${prefix}${tags.join(`|${prefix}`)})${prefix.match(/^ /) ? "" : " ?"}`, "g", "i"), t => {
     const old = t
     let spc = false
     
