@@ -82,16 +82,16 @@ module.exports = function Tagify(options = {}, ...tags) {
         if (t.resolve !== false) {
           if (t.value === Boolean || typeof t.value === "boolean" || ["true", "false"].includes(t.value)) {
             if (!tagData[t.tag]) tagData[t.tag] = Boolean
-            t.value = "(true|false|yes|no)"
+            t.value = "(?:true|false|yes|no)"
           }
           else if (t.value === Number || typeof t.value === "number" || !isNaN(t.value)) {
             if (!tagData[t.tag]) tagData[t.tag] = Number
             t.value = options.negativeNumbers ? "-?\\d+" : "\\d+"
-            if (options.numberDoubles) t.value += "(\.\\d+)?"
+            if (options.numberDoubles) t.value += "(?:\.\\d+)?"
           }
           else if (t.value instanceof RegExp) {
             if (!tagData[t.tag]) tagData[t.tag] = RegExp
-            t.value = `(${t.value.toString().split("/")[1]})`
+            t.value = `(?:${t.value.toString().split("/")[1]})`
           }
           else if ([Object, Array, JSON].includes(t.value) || typeof t.value === "object") {
             if (!tagData[t.tag]) tagData[t.tag] = Object
@@ -110,14 +110,15 @@ module.exports = function Tagify(options = {}, ...tags) {
     return t
   })
 
-  if (prefix instanceof RegExp) prefix = prefix.toString().split("/")[1]
-  const p = new RegExp(prefix)
+  if (prefix instanceof RegExp) prefix = `(?:${prefix.toString().split("/")[1]})`
+  if (prefix.startsWith("^")) prefix = prefix.slice(1)
+  const p = new RegExp(`^${prefix}`)
   let newString = tags[0] ? string.replace(new RegExp(` ?(?:${prefix}${tags.join(`|${prefix}`)})${prefix.match(/^ /) ? "" : " ?"}`, "g", "i"), t => {
     const old = t
     let spc = false
     
     if (t.startsWith(" ") && t.endsWith(" ") && !string.startsWith(t) && !string.endsWith(t)) spc = true
-    t = t.replace(p, "").trim()
+    t = t.trim().replace(p, "")
 
     if (tagData[t.split(" ")[0]] || (t.includes(" ") && !tags.includes(t))) {
       t = t.split(/ +/)
