@@ -91,7 +91,7 @@ module.exports = function Tagify(options = {}, ...tags) {
           }
           else if (t.value instanceof RegExp) {
             if (!tagData[t.tag]) tagData[t.tag] = RegExp
-            t.value = `(?:${t.value.toString().split("/")[1]})`
+            t.value = `(?:${t.value.source})`
           }
           else if ([Object, Array, JSON].includes(t.value) || typeof t.value === "object") {
             if (!tagData[t.tag]) tagData[t.tag] = Object
@@ -110,7 +110,7 @@ module.exports = function Tagify(options = {}, ...tags) {
     return t
   })
 
-  if (prefix instanceof RegExp) prefix = `(?:${prefix.toString().split("/")[1]})`
+  if (prefix instanceof RegExp) prefix = `(?:${prefix.source})`
   if (prefix.startsWith("^")) prefix = prefix.slice(1)
   const p = new RegExp(`^${prefix}`)
   let newString = tags[0] ? string.replace(new RegExp(` ?(?:${prefix}${tags.join(`|${prefix}`)})${" ".match(p) ? "" : " ?"}`, "g", "i"), t => {
