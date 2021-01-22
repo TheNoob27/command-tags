@@ -13,6 +13,7 @@
  * @property {boolean} [removeAllTags=false] Whether or not it should remove every word that starts with the prefix, but only match valid tags.
  * @property {boolean} [negativeNumbers=true] Whether or not negative numbers can be matched if only looking for a number.
  * @property {boolean} [numberDoubles=false] Whether or not doubles can be matched, such as 23.90
+ * @property {boolean} [lowercaseTags=true] Whether or not matched tags should be returned in lowercase. e.g: match HELLOWORLD and helloWorld and return as helloworld
  * @property {Object<string, NumberConstructor|StringConstructor|BooleanConstructor|ObjectConstructor>} [tagData] Default types that matches tags should be parsed into.
  */
 
@@ -113,33 +114,35 @@ module.exports = function Tagify(options = {}, ...tags) {
   if (prefix instanceof RegExp) prefix = `(?:${prefix.source})`
   if (prefix.startsWith("^")) prefix = prefix.slice(1)
   const p = new RegExp(`^${prefix}`)
-  let newString = tags[0] ? string.replace(new RegExp(` ?(?:${prefix}${tags.join(`|${prefix}`)})${" ".match(p) ? "" : " ?"}`, "g", "i"), t => {
+  let newString = tags[0] ? string.replace(new RegExp(` ?(?:${prefix}${tags.join(`|${prefix}`)})${" ".match(p) ? "" : " ?"}`, "gi"), t => {
     const old = t
     let spc = false
     
     if (t.startsWith(" ") && t.endsWith(" ") && !string.startsWith(t) && !string.endsWith(t)) spc = true
     t = t.trim().replace(p, "")
 
-    if (tagData[t.split(" ")[0]] || (t.includes(" ") && !tags.includes(t))) {
-      t = t.split(/ +/)
-      t = [t[0], t.slice(1).join(" ")]
+    let k = t.split(" ")[0]
+    k = Object.keys(tagData).find(d => d.toLowerCase() === k.toLowerCase()) ||
+      (options.lowercaseTags !== false ? k.toLowerCase() : k)
+    if (tagData[k] || (t.includes(" ") && !tags.includes(t))) {
+      t = t.split(/ +/).slice(1).join(" ")
 
-      if (tagData[t[0]] === Number) t[1] = Number(t[1])
-      else if (tagData[t[0]] === Boolean) {
-        switch (t[1]) {
-          case "true": case "yes": t[1] = true; break
-          case "false": case "no": t[1] = false; break
+      if (tagData[k] === Number) t = Number(t)
+      else if (tagData[k] === Boolean) {
+        switch (t) {
+          case "true": case "yes": t = true; break
+          case "false": case "no": t = false; break
         }
-      } else if (tagData[t[0]] !== String) {
+      } else if (tagData[k] !== String) {
         try {
-          t[1] = t[1].startsWith("{") ? JSON.parse(t[1].replace(/({|\s|,)\w+:/g, w => w[0] + '"' + w.slice(1, w.length - 1) + '":')) : JSON.parse(t[1])
+          t = t.startsWith("{") ? JSON.parse(t.replace(/({|\s|,)\w+:/g, w => w[0] + '"' + w.slice(1, w.length - 1) + '":')) : JSON.parse(t)
         } catch(err) {
-          if (tagData[t[0]] === Object) return options.removeAllTags ? spc ? " " : "" : old
+          if (tagData[k] === Object) return options.removeAllTags ? spc ? " " : "" : old
         }
       }
 
-      data[t[0]] = t[1]
-      if (!matches.includes(t[0])) matches.push(t[0])
+      data[k] = t
+      if (!matches.includes(k)) matches.push(k)
     } else if (!matches.includes(t)) matches.push(t)
 
     return spc ? " " : ""

@@ -16,6 +16,8 @@ Parse custom tags/input/options that appear anywhere in a string.
 
 **tagData**: Default types that matches tags should be parsed into.
 
+**lowercaseTags**: Whether or not matched tags should be returned in lowercase. e.g: match HELLOWORLD and helloWorld and return as helloworld. Defaults to true
+
 # Examples
 ```js
 const Tagify = require("command-tags")
