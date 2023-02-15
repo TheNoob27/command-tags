@@ -130,7 +130,7 @@ export interface ParsedTags {
  */
 export default function Tagify(
   options: Options,
-  ...tags: Array<string | tag>
+  ...tags: Array<string | Tag>
 ): ParsedTags;
 
 /**
